@@ -1,7 +1,7 @@
 from scipy import stats
 import datetime
 
-Class Process:
+class Process:
     def dist_from_name(name, attributes): # maybe use in the future, for now -- not
         if name == "uniform":
             low, high = attribites[0], attributes[1]
@@ -15,17 +15,17 @@ Class Process:
     
     def options_dist(options, probs=None):
         if probs is None:
-            probs = [1/size(options)]*size(options)
+            probs = [1/len(options)]*len(options)
         else: #normalise the probabilities
             probs = [float(prob)/sum(probs) for prob in probs]
         dist_dict = {}
-        for i  in xrange(size(options)):
+        for i in range(len(options)):
             dist_dict[options[i]] = probs[i]
         return dist_dict
         
     def __init__(self, name, parent, dist_options, dist_probs=None, data=None):
         self.name = name
-        self.distribution = options_dist(dist_options, dist_probs)
+        self.distribution = Process.options_dist(dist_options, dist_probs)
         self.data = data
         self.tmstamp = datetime.datetime.now()
         self.arrows_out = []
@@ -37,8 +37,8 @@ Class Process:
         next_dist_prob = next_data[2]
         next_datasheet = next_data[3]
         next_parent = self
-        next = Process(next_name, next_dist_options, next_dist_prob, next_datasheet, next_data, self)
-        prob = self.dist[option]
+        next = Process(next_name, self, next_dist_options, next_dist_prob, next_datasheet)
+        prob = self.distribution[option]
         self.arrows_out.append((prob, next))
 
 # Some testing
