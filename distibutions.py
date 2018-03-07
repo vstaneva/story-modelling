@@ -33,6 +33,12 @@ Class Process:
         self.arrows_out = []
         self.parent = parent
         
-    def add_arrow(prob, next):
+    def add_arrow(self, prob, next_data):
+        next_name = next_data[0]
+        next_dist_options = next_data[1]
+        next_dist_prob = next_data[2]
+        next_datasheet = next_data[3]
+        next_parent = self
+        next = Process(next_name, next_dist_options, next_dist_prob, next_datasheet, next_data, self)
         self.arrows_out.append((prob, next))
 
