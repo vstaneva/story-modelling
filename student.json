@@ -1,10 +1,13 @@
 {
-  "name": "student",
-  "id": 1,
-  "parent": null,
-  "options": [
-    "cheat",
-    "not cheat"],
-  "probs": null,
-  "data": null
+  "type": "process",
+  "info": {
+    "name": "student",
+    "id": 1,
+    "parent": null,
+    "options": [
+      "cheat",
+      "not cheat"],
+    "probs": null,
+    "data": null
+  }
 }

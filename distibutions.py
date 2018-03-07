@@ -1,5 +1,6 @@
-from scipy import stats
+# from scipy import stats
 import datetime
+import json
 
 class Process:
     def options_dist(options, probs=None):
@@ -28,13 +29,29 @@ class Process:
         next_dist_prob = next_data[3]
         next_datasheet = next_data[4]
         next_parent = self
-        next = Process(next_name, self, next_dist_options, next_dist_prob, next_datasheet)
+        next = Process(next_name, id, self, next_dist_options, next_dist_prob, next_datasheet)
         prob = self.distribution[option]
         self.arrows_out.append((prob, next))
+
+def read_from_json(filename):
+    with open(filename) as data_file:
+        data = json.load(datafile)
+        if data["type"] == "process": # add more later on!
+            info = data["info"]
+            name = info["name"]
+            id = info["id"]
+            parent = info["parent"]
+            options = info["options"]
+            probs = info["probs"]
+            data = info["data"]
+            return Process(info, name, id, parent, options, probs, data)
+        if data["type"] == "arrow":
+            #figure out what to put here
+            pass
+
 
 # Some testing
 student = Process("student",1, None, ["cheat", "not cheat"])
 student.add_arrow("cheat",     ["first coin",2, ["heads", "tails"], None, None])
 student.add_arrow("not cheat", ["first coin",3, ["heads", "tails"], None, None])  
-first_coin_1 = student.arrows_out[1]
-first_coin_1.add_arrow
+first_coin_1 = student.arrows_out[0]
