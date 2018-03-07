@@ -1,0 +1,9 @@
+{
+  "name": "student",
+  "parent": null,
+  "options": [
+    "cheat",
+    "not cheat"],
+  "probs": null,
+  "data": null
+}
