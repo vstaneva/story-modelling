@@ -1,0 +1,5 @@
+type distribution =
+  Uniform  of float*float
+| DUniform of int*int
+| Coin     of float
+
