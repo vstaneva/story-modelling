@@ -2,17 +2,6 @@ from scipy import stats
 import datetime
 
 class Process:
-    def dist_from_name(name, attributes): # maybe use in the future, for now -- not
-        if name == "uniform":
-            low, high = attribites[0], attributes[1]
-            return stats.uniform(low, high)
-        elif name == "discrete uniform":
-            low, high = attributes[0], attributes[1]
-            return stats.randint(low, high)
-        elif name == "coin": #right now we only use this, I think
-            p = attributes[0]
-            return stats.bernoulli(p)
-    
     def options_dist(options, probs=None):
         if probs is None:
             probs = [1/len(options)]*len(options)
