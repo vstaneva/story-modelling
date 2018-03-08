@@ -22,7 +22,7 @@ class Process:
         self.arrows_out = []
         self.parent = parent
         
-    def add_arrow(self, option, next_data):
+    def add_arrow(self, arrow_label, next_data):
         next_name = next_data[0]
         next_id = next_data[1]
         next_dist_options = next_data[2]
@@ -30,7 +30,7 @@ class Process:
         next_datasheet = next_data[4]
         next_parent = self
         next = Process(next_name, id, self, next_dist_options, next_dist_prob, next_datasheet)
-        prob = self.distribution[option]
+        prob = self.distribution[arrow_label]
         self.arrows_out.append((prob, next))
 
 def read_from_json(filename):
@@ -46,8 +46,20 @@ def read_from_json(filename):
             data = info["data"]
             return Process(info, name, id, parent, options, probs, data)
         if data["type"] == "arrow":
-            #figure out what to put here
-            pass
+            info = data["info"]
+            id = info["id"]
+            parent = info["parent"]
+            name = info["name"]
+            arrow_label = info["arrow_label"]
+            options = info["options"]
+            probs = info["probs"]
+            data = info["data"]
+            arrow = [name, id, options, prob, data]
+            # instead of this if statement, perform a search to find the parent
+            if id == 1:
+                student.add_arrow(arrow_label, arrow)
+            else:
+                pass
 
 
 # Some testing

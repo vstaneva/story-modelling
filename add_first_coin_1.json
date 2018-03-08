@@ -1,0 +1,14 @@
+{
+  "type": "arrow",
+  "info": {
+    "id": 2,
+    "parent": 1,
+    "name": "first coin"
+    "arrow_label": "cheat",
+    "options": [
+      "tails",
+      "heads"],
+    "probs": null,
+    "data": null
+  }
+}

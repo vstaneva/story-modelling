@@ -1,8 +1,8 @@
 {
   "type": "process",
   "info": {
-    "name": "student",
     "id": 1,
+    "name": "student",
     "parent": null,
     "options": [
       "cheat",
