@@ -35,7 +35,7 @@ class Process:
 
 def read_from_json(filename):
     with open(filename) as data_file:
-        data = json.load(datafile)
+        data = json.load(data_file)
         if data["type"] == "process": # add more later on!
             info = data["info"]
             name = info["name"]
@@ -44,7 +44,7 @@ def read_from_json(filename):
             options = info["options"]
             probs = info["probs"]
             data = info["data"]
-            return Process(info, name, id, parent, options, probs, data)
+            return Process(name, id, parent, options, probs, data)
         if data["type"] == "arrow":
             info = data["info"]
             id = info["id"]
@@ -67,3 +67,6 @@ student = Process("student",1, None, ["cheat", "not cheat"])
 student.add_arrow("cheat",     ["first coin",2, ["heads", "tails"], None, None])
 student.add_arrow("not cheat", ["first coin",3, ["heads", "tails"], None, None])  
 first_coin_1 = student.arrows_out[0]
+
+# Test with the js
+stdnt = read_from_json("student.json")
