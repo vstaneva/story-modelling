@@ -27,11 +27,11 @@ class Process:
         Process.all[id] = self
         
     def add_arrow(self, arrow_label, next_data):
-        next_name = next_data[0]
-        next_id = next_data[1]
-        next_dist_options = next_data[2]
-        next_dist_prob = next_data[3]
-        next_datasheet = next_data[4]
+        next_name = next_data["name"]
+        next_id = next_data["id"]
+        next_dist_options = next_data["options"]
+        next_dist_prob = next_data["probs"]
+        next_datasheet = next_data["data"]
         next_parent = self
         next = Process(next_name, id, self, next_dist_options, next_dist_prob, next_datasheet)
         prob = self.distribution[arrow_label]
@@ -51,26 +51,49 @@ def read_from_json(filename):
             return Process(name, id, parent, options, probs, data)
         if data["type"] == "arrow":
             info = data["info"]
-            id = info["id"]
+            arrow_keys = ["name", "id", "options", "probs", "data"]
+            arrow = {key:value for key,value in info.items() if key in arrow_keys}
             parent = info["parent"]
-            name = info["name"]
             arrow_label = info["arrow_label"]
-            options = info["options"]
-            probs = info["probs"]
-            data = info["data"]
-            arrow = [name, id, options, probs, data]
             process = Process.all[parent]
             process.add_arrow(arrow_label, arrow)
+    def take_json_snapshot(root_id):
+        # prepare the json
+        data = {}
+        # walk the process graph -- for DFS, switch to stack
+        process_q = queue.Queue()
+        process_q.put(root_id)
+        visited = set()
+        while not process_q.empty():
+            current_id = process_q.get()
+            if current_id in visited:
+                continue
+            visited.add(current_id)
+            current = Process.all[current_id]
+            
 
 
 # Some testing
 student = Process("student",10, None, ["cheat", "not cheat"])
-student.add_arrow("cheat",     ["first coin",20, ["heads", "tails"], None, None])
-student.add_arrow("not cheat", ["first coin",30, ["heads", "tails"], None, None])  
+student.add_arrow(
+    "cheat", {
+        "name": "first coin",
+        "id": 20,
+        "options": ["heads", "tails"],
+        "probs": None,
+        "data": None})
+student.add_arrow(
+    "not cheat", {
+        "name": "first coin",
+        "id": 30,
+        "options": ["heads", "tails"],
+        "probs": None,
+        "data": None})  
 first_coin_1 = student.arrows_out[0]
 print (student.arrows_out[0][0])
 
 # Test with the js
 stdnt = read_from_json("student.json")
 read_from_json("add_first_coin_1.json")
+read_from_json("add_first_coin_2.json")
 print (stdnt.arrows_out[0][0])
