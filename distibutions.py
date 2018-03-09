@@ -24,7 +24,7 @@ class Process:
         self.dict = dict
         self.dict["distribution"] = Process.options_dist(dict["options"], dict.get("probs"))
         self.dict["tmstamp"] = datetime.datetime.now()
-        self.dict["arrows_out"] = []
+        self.dict["arrows_out"] = {}
         
         self.id = self.dict["id"]
         self.tmstamp = self.dict["tmstamp"]
@@ -32,7 +32,8 @@ class Process:
         
     def add_arrow(self, arrow_label, next_data):
         prob = self.dict["distribution"][arrow_label]
-        self.dict["arrows_out"].append((arrow_label, prob, next))
+        next = Process(next_data)
+        self.dict["arrows_out"][arrow_label] = (prob, next)
 
 def read_from_json(filename):
     with open(filename) as data_file:
@@ -84,11 +85,11 @@ student.add_arrow(
         "options": ["heads", "tails"],
         "probs": None,
         "data": None})  
-first_coin_1 = student.dict["arrows_out"][0]
-print (student.dict["arrows_out"][0][0])
+first_coin_1 = student.dict["arrows_out"]["cheat"]
+print (student.dict["arrows_out"]["cheat"][0])
 
 # Test with the js
 stdnt = read_from_json("student.json")
 read_from_json("add_first_coin_1.json")
 read_from_json("add_first_coin_2.json")
-print (stdnt.dict["arrows_out"][0][0])
+print (stdnt.dict["arrows_out"]["cheat"][1].dict["name"])
