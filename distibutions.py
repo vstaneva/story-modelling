@@ -6,49 +6,40 @@ class Process:
     
     all = {}
 
-    def options_dist(options, probs=None):
+    def norm_probs(options, probs):
         if probs is None:
             probs = [1/len(options)]*len(options)
         else: #normalise the probabilities
             probs = [float(prob)/sum(probs) for prob in probs]
+        return probs
+
+    def options_dist(options, probs=None):
+        probs = Process.norm_probs(options, probs)
         dist_dict = {}
         for i in range(len(options)):
             dist_dict[options[i]] = probs[i]
         return dist_dict
         
-    def __init__(self, name, id, parent, dist_options, dist_probs=None, data=None):
-        self.name = name
-        self.id = id
-        self.distribution = Process.options_dist(dist_options, dist_probs)
-        self.data = data
-        self.tmstamp = datetime.datetime.now()
-        self.arrows_out = []
-        self.parent = parent
-        Process.all[id] = self
+    def __init__(self, dict):
+        self.dict = dict
+        self.dict["distribution"] = Process.options_dist(dict["options"], dict.get("probs"))
+        self.dict["tmstamp"] = datetime.datetime.now()
+        self.dict["arrows_out"] = []
+        
+        self.id = self.dict["id"]
+        self.tmstamp = self.dict["tmstamp"]
+        Process.all[self.id] = self
         
     def add_arrow(self, arrow_label, next_data):
-        next_name = next_data["name"]
-        next_id = next_data["id"]
-        next_dist_options = next_data["options"]
-        next_dist_prob = next_data["probs"]
-        next_datasheet = next_data["data"]
-        next_parent = self
-        next = Process(next_name, id, self, next_dist_options, next_dist_prob, next_datasheet)
-        prob = self.distribution[arrow_label]
-        self.arrows_out.append((arrow_label, prob, next))
+        prob = self.dict["distribution"][arrow_label]
+        self.dict["arrows_out"].append((arrow_label, prob, next))
 
 def read_from_json(filename):
     with open(filename) as data_file:
         data = json.load(data_file)
         if data["type"] == "process": # add more later on!
             info = data["info"]
-            name = info["name"]
-            id = info["id"]
-            parent = info["parent"]
-            options = info["options"]
-            probs = info["probs"]
-            data = info["data"]
-            return Process(name, id, parent, options, probs, data)
+            return Process(info)
         if data["type"] == "arrow":
             info = data["info"]
             arrow_keys = ["name", "id", "options", "probs", "data"]
@@ -74,7 +65,11 @@ def read_from_json(filename):
 
 
 # Some testing
-student = Process("student",10, None, ["cheat", "not cheat"])
+student = Process({
+        "name": "student",
+        "id": 10,
+        "parent": None,
+        "options": ["cheat", "not cheat"]})
 student.add_arrow(
     "cheat", {
         "name": "first coin",
@@ -89,11 +84,11 @@ student.add_arrow(
         "options": ["heads", "tails"],
         "probs": None,
         "data": None})  
-first_coin_1 = student.arrows_out[0]
-print (student.arrows_out[0][0])
+first_coin_1 = student.dict["arrows_out"][0]
+print (student.dict["arrows_out"][0][0])
 
 # Test with the js
 stdnt = read_from_json("student.json")
 read_from_json("add_first_coin_1.json")
 read_from_json("add_first_coin_2.json")
-print (stdnt.arrows_out[0][0])
+print (stdnt.dict["arrows_out"][0][0])
