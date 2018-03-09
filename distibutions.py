@@ -3,6 +3,9 @@ import datetime
 import json
 
 class Process:
+    
+    all = {}
+
     def options_dist(options, probs=None):
         if probs is None:
             probs = [1/len(options)]*len(options)
@@ -21,6 +24,7 @@ class Process:
         self.tmstamp = datetime.datetime.now()
         self.arrows_out = []
         self.parent = parent
+        Process.all[id] = self
         
     def add_arrow(self, arrow_label, next_data):
         next_name = next_data[0]
@@ -55,11 +59,8 @@ def read_from_json(filename):
             probs = info["probs"]
             data = info["data"]
             arrow = [name, id, options, probs, data]
-            # instead of this if statement, perform a search to find the parent
-            if parent == 1:
-                stdnt.add_arrow(arrow_label, arrow)
-            else:
-                pass
+            process = Process.all[parent]
+            process.add_arrow(arrow_label, arrow)
 
 
 # Some testing
