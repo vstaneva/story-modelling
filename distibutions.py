@@ -31,7 +31,7 @@ class Process:
         next_parent = self
         next = Process(next_name, id, self, next_dist_options, next_dist_prob, next_datasheet)
         prob = self.distribution[arrow_label]
-        self.arrows_out.append((prob, next))
+        self.arrows_out.append((arrow_label, prob, next))
 
 def read_from_json(filename):
     with open(filename) as data_file:
@@ -54,19 +54,22 @@ def read_from_json(filename):
             options = info["options"]
             probs = info["probs"]
             data = info["data"]
-            arrow = [name, id, options, prob, data]
+            arrow = [name, id, options, probs, data]
             # instead of this if statement, perform a search to find the parent
-            if id == 1:
-                student.add_arrow(arrow_label, arrow)
+            if parent == 1:
+                stdnt.add_arrow(arrow_label, arrow)
             else:
                 pass
 
 
 # Some testing
-student = Process("student",1, None, ["cheat", "not cheat"])
-student.add_arrow("cheat",     ["first coin",2, ["heads", "tails"], None, None])
-student.add_arrow("not cheat", ["first coin",3, ["heads", "tails"], None, None])  
+student = Process("student",10, None, ["cheat", "not cheat"])
+student.add_arrow("cheat",     ["first coin",20, ["heads", "tails"], None, None])
+student.add_arrow("not cheat", ["first coin",30, ["heads", "tails"], None, None])  
 first_coin_1 = student.arrows_out[0]
+print (student.arrows_out[0][0])
 
 # Test with the js
 stdnt = read_from_json("student.json")
+read_from_json("add_first_coin_1.json")
+print (stdnt.arrows_out[0][0])
