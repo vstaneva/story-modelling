@@ -4,10 +4,12 @@
     "id": 1,
     "name": "student",
     "parent": null,
-    "options": [
-      "cheat",
-      "not cheat"],
-    "probs": null,
+    "distribution": {
+      "type": "discrete options",
+      "options": [
+        "cheat",
+      	"not cheat"],
+      "probs": null },
     "data": null
   }
 }

@@ -22,7 +22,10 @@ class Process:
         
     def __init__(self, dict):
         self.dict = dict
-        self.dict["distribution"] = Process.options_dist(dict["options"], dict.get("probs"))
+        if self.dict["distribution"]["type"] == "discrete options":
+            options = self.dict["distribution"]["options"]
+            probs = self.dict["distribution"]["probs"]
+            self.dict["distribution"] = Process.options_dist(options, probs)
         self.dict["tmstamp"] = datetime.datetime.now()
         self.dict["arrows_out"] = {}
         
@@ -43,7 +46,7 @@ def read_from_json(filename):
             return Process(info)
         if data["type"] == "arrow":
             info = data["info"]
-            arrow_keys = ["name", "id", "options", "probs", "data"]
+            arrow_keys = ["name", "id", "distribution", "data"]
             arrow = {key:value for key,value in info.items() if key in arrow_keys}
             parent = info["parent"]
             arrow_label = info["arrow_label"]
@@ -63,27 +66,42 @@ def read_from_json(filename):
             visited.add(current_id)
             current = Process.all[current_id]
             
-
+def take_snapshot(root_id):
+    process = Process.all[root_id]
+    # json_content = json.dumps(process)
+    timestamp = datetime.datetime.now()
+    filename = str(timestamp)+".json"
+    
 
 # Some testing
 student = Process({
         "name": "student",
         "id": 10,
         "parent": None,
-        "options": ["cheat", "not cheat"]})
+        "distribution": {
+            "type": "discrete options",
+            "options": ["cheat", "not cheat"],
+            "probs": None}
+        })
 student.add_arrow(
     "cheat", {
         "name": "first coin",
+        "parent": 10,
         "id": 20,
-        "options": ["heads", "tails"],
-        "probs": None,
+        "distribution":{
+            "type": "discrete options",
+            "options": ["heads", "tails"],
+            "probs": None },
         "data": None})
 student.add_arrow(
     "not cheat", {
         "name": "first coin",
+        "parent": 10,
         "id": 30,
-        "options": ["heads", "tails"],
-        "probs": None,
+        "distribution": {
+            "type": "discrete options",
+            "options": ["heads", "tails"],
+            "probs": None},
         "data": None})  
 first_coin_1 = student.dict["arrows_out"]["cheat"]
 print (student.dict["arrows_out"]["cheat"][0])
@@ -93,3 +111,4 @@ stdnt = read_from_json("student.json")
 read_from_json("add_first_coin_1.json")
 read_from_json("add_first_coin_2.json")
 print (stdnt.dict["arrows_out"]["cheat"][1].dict["name"])
+take_snapshot(stdnt.dict["id"])

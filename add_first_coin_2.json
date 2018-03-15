@@ -5,10 +5,12 @@
     "parent": 1,
     "name": "first coin",
     "arrow_label": "cheat",
-    "options": [
-      "tails",
-      "heads"],
-    "probs": null,
+    "distribution": {
+      "type": "discrete options",    
+      "options": [
+        "tails",
+      	"heads"],
+      "probs": null},
     "data": null
   }
 }
