@@ -26,7 +26,7 @@ class Process:
             options = self.dict["distribution"]["options"]
             probs = self.dict["distribution"]["probs"]
             self.dict["distribution"] = Process.options_dist(options, probs)
-        self.dict["tmstamp"] = datetime.datetime.now()
+        self.dict["tmstamp"] = datetime.datetime.now().strftime("%s")
         self.dict["arrows_out"] = {}
         
         self.id = self.dict["id"]
@@ -68,8 +68,11 @@ def read_from_json(filename):
             
 def take_snapshot(root_id):
     process = Process.all[root_id]
-    # json_content = json.dumps(process)
-    timestamp = datetime.datetime.now()
+    json_content = {}
+    json_content["type"] = "timestamp dump"
+    json_content["info"] = process.__dict__
+    json_load = json.dumps(json_content)
+    timestamp = datetime.datetime.now().strftime("%s")
     filename = str(timestamp)+".json"
     
 
