@@ -4,7 +4,7 @@
     "id": 3,
     "parent": 1,
     "name": "first coin",
-    "arrow_label": "cheat",
+    "arrow_label": "not cheat",
     "distribution": {
       "type": "discrete options",    
       "options": [
