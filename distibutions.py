@@ -1,6 +1,7 @@
 # from scipy import stats
 import datetime
 import json
+import jsonpickle
 
 class Process:
     
@@ -70,11 +71,13 @@ def take_snapshot(root_id):
     process = Process.all[root_id]
     json_content = {}
     json_content["type"] = "timestamp dump"
-    json_content["info"] = process.__dict__
-    json_load = json.dumps(json_content)
+    json_content["info"] = process
+    json_load = jsonpickle.encode(json_content)
     timestamp = datetime.datetime.now().strftime("%s")
     filename = str(timestamp)+".json"
-    
+    # below, check if "logs" dir exists
+    with open("logs/"+filename, "w") as file:
+        file.write(json_load)
 
 # Some testing
 student = Process({
