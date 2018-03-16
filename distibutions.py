@@ -53,19 +53,6 @@ def read_from_json(filename):
             arrow_label = info["arrow_label"]
             process = Process.all[parent]
             process.add_arrow(arrow_label, arrow)
-    def take_json_snapshot(root_id):
-        # prepare the json
-        data = {}
-        # walk the process graph -- for DFS, switch to stack
-        process_q = queue.Queue()
-        process_q.put(root_id)
-        visited = set()
-        while not process_q.empty():
-            current_id = process_q.get()
-            if current_id in visited:
-                continue
-            visited.add(current_id)
-            current = Process.all[current_id]
             
 def take_snapshot(root_id):
     process = Process.all[root_id]
