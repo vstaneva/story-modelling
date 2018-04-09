@@ -42,6 +42,7 @@ class Process:
 def read_from_json(filename):
     with open(filename) as data_file:
         data = json.load(data_file)
+        print (data.keys())
         if data["type"] == "process": # add more later on!
             info = data["info"]
             return Process(info)
@@ -53,18 +54,23 @@ def read_from_json(filename):
             arrow_label = info["arrow_label"]
             process = Process.all[parent]
             process.add_arrow(arrow_label, arrow)
-            
+        if data["type"] == "timestamp dump":
+            info = data["info"]
+            process = jsonpickle.unpickler.Unpickler().restore(info)
+            # would this work? what do I want to do next? not sure... ^
+
 def take_snapshot(root_id):
     process = Process.all[root_id]
     json_content = {}
     json_content["type"] = "timestamp dump"
-    json_content["info"] = process
-    json_load = jsonpickle.encode(json_content)
+    json_content["info"] = jsonpickle.pickler.Pickler().flatten(process)
+    json_load = json.dumps(json_content)
     timestamp = datetime.datetime.now().strftime("%s")
-    filename = str(timestamp)+".json"
-    # below, check if "logs" dir exists
-    with open("logs/"+filename, "w") as file:
+    filename = "logs/"+str(timestamp)+".json"
+    # above, check if "logs" dir exists
+    with open(filename, "w") as file:
         file.write(json_load)
+    return filename
 
 # Some testing
 student = Process({
@@ -104,4 +110,6 @@ stdnt = read_from_json("student.json")
 read_from_json("add_first_coin_1.json")
 read_from_json("add_first_coin_2.json")
 print (stdnt.dict["arrows_out"]["not cheat"][1].dict["name"])
-take_snapshot(stdnt.dict["id"])
+filename = take_snapshot(stdnt.dict["id"])
+print (filename)
+read_from_json(filename)
