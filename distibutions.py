@@ -13,6 +13,21 @@ class Process:
         else: #normalise the probabilities
             probs = [float(prob)/sum(probs) for prob in probs]
         return probs
+    
+    def record(process):
+        id = process.id
+        if id not in Process.all:
+            Process.all[id] = [process]
+        else:
+            # think about cleaning duplicate processes
+            # such that if we load the same JSON 5 times
+            # we only see 1 process appended ??
+            # (ASK Yen-Ling)
+            Process.all[id].append(process)
+        
+        print (process.dict["arrows_out"])
+        for (prob,next) in process.dict["arrows_out"].values():
+            Process.record(next)
 
     def options_dist(options, probs=None):
         probs = Process.norm_probs(options, probs)
@@ -32,7 +47,7 @@ class Process:
         
         self.id = self.dict["id"]
         self.tmstamp = self.dict["tmstamp"]
-        Process.all[self.id] = self
+        Process.all[self.id] = [self]
         
     def add_arrow(self, arrow_label, next_data):
         prob = self.dict["distribution"][arrow_label]
@@ -56,8 +71,15 @@ def read_from_json(filename):
             process.add_arrow(arrow_label, arrow)
         if data["type"] == "timestamp dump":
             info = data["info"]
+            print (Process.all.keys())
             process = jsonpickle.unpickler.Unpickler().restore(info)
-            # would this work? what do I want to do next? not sure... ^
+            Process.record(process)
+            print (Process.all.keys())
+            
+            #how to keep track of the recursion?
+            #just bc it doesn't error out doesn't mean that it works?
+            # how to figure out if the process is coherent??
+            # yes would this work? what do I want to do next? not sure... ^
 
 def take_snapshot(root_id):
     process = Process.all[root_id]
@@ -106,10 +128,12 @@ first_coin_1 = student.dict["arrows_out"]["cheat"]
 print (student.dict["arrows_out"]["cheat"][0])
 
 # Test with the js
-stdnt = read_from_json("student.json")
-read_from_json("add_first_coin_1.json")
-read_from_json("add_first_coin_2.json")
-print (stdnt.dict["arrows_out"]["not cheat"][1].dict["name"])
-filename = take_snapshot(stdnt.dict["id"])
-print (filename)
-read_from_json(filename)
+#stdnt = read_from_json("student.json")
+#read_from_json("add_first_coin_1.json")
+#read_from_json("add_first_coin_2.json")
+#print (stdnt.dict["arrows_out"]["not cheat"][1].dict["name"])
+#filename = take_snapshot(stdnt.dict["id"])
+#print (filename)
+#read_from_json(filename)
+
+read_from_json("logs/1523311821.json")
