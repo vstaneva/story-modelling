@@ -25,7 +25,6 @@ class Process:
             # (ASK Yen-Ling)
             Process.all[id].append(process)
         
-        print (process.dict["arrows_out"])
         for (prob,next) in process.dict["arrows_out"].values():
             Process.record(next)
 
@@ -71,15 +70,8 @@ def read_from_json(filename):
             process.add_arrow(arrow_label, arrow)
         if data["type"] == "timestamp dump":
             info = data["info"]
-            print (Process.all.keys())
             process = jsonpickle.unpickler.Unpickler().restore(info)
             Process.record(process)
-            print (Process.all.keys())
-            
-            #how to keep track of the recursion?
-            #just bc it doesn't error out doesn't mean that it works?
-            # how to figure out if the process is coherent??
-            # yes would this work? what do I want to do next? not sure... ^
 
 def take_snapshot(root_id):
     process = Process.all[root_id]
