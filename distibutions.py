@@ -2,7 +2,6 @@
 import datetime
 import json
 import jsonpickle
-from flask import Flask
 
 class Process:
     
@@ -131,8 +130,3 @@ read_from_json(filename)
 
 #read_from_json("logs/1523311821.json")
 
-app = Flask(__name__)
-
-@app.route('/')
-def hello_world():
-    return 'Hello world'
