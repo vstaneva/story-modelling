@@ -2,11 +2,11 @@
 import datetime
 import json
 import jsonpickle
+from flask import Flask
 
 class Process:
     
     all = {}
-
     def norm_probs(options, probs):
         if probs is None:
             probs = [1/len(options)]*len(options)
@@ -66,12 +66,13 @@ def read_from_json(filename):
             arrow = {key:value for key,value in info.items() if key in arrow_keys}
             parent = info["parent"]
             arrow_label = info["arrow_label"]
-            process = Process.all[parent]
+            process = Process.all[parent][-1]
             process.add_arrow(arrow_label, arrow)
         if data["type"] == "timestamp dump":
             info = data["info"]
-            process = jsonpickle.unpickler.Unpickler().restore(info)
-            Process.record(process)
+            process_list = jsonpickle.unpickler.Unpickler().restore(info)
+            for process in process_list[::-1]:
+                Process.record(process)
 
 def take_snapshot(root_id):
     process = Process.all[root_id]
@@ -120,12 +121,18 @@ first_coin_1 = student.dict["arrows_out"]["cheat"]
 print (student.dict["arrows_out"]["cheat"][0])
 
 # Test with the js
-#stdnt = read_from_json("student.json")
-#read_from_json("add_first_coin_1.json")
-#read_from_json("add_first_coin_2.json")
-#print (stdnt.dict["arrows_out"]["not cheat"][1].dict["name"])
-#filename = take_snapshot(stdnt.dict["id"])
-#print (filename)
-#read_from_json(filename)
+stdnt = read_from_json("student.json")
+read_from_json("add_first_coin_1.json")
+read_from_json("add_first_coin_2.json")
+print (stdnt.dict["arrows_out"]["not cheat"][1].dict["name"])
+filename = take_snapshot(stdnt.dict["id"])
+print (filename)
+read_from_json(filename)
 
-read_from_json("logs/1523311821.json")
+#read_from_json("logs/1523311821.json")
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello world'
