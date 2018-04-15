@@ -1,7 +1,9 @@
-from flask import Flask
+import flask
 import glob
+import json
+import pprint
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 def get_all_filenames(dir_name):
     return glob.glob(dir_name+"/*.json")
@@ -25,9 +27,10 @@ def hello_world():
 def student():
     return "STUDENT"
 
-@app.route('/example/<log_id>')
+@app.route('/printlog/<log_id>')
 def display_log(log_id):
     log_name = get_log_name_from_tmst(log_id)
     with open(log_name) as log:
-        json_data = log.read()
-        return json_data
+        json_data = json.load(log)
+        # pretty_out = pprint.pformat(json.loads(json_data),indent=2,width=40)
+        return flask.jsonify(json_data)
