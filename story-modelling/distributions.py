@@ -120,9 +120,9 @@ first_coin_1 = student.dict["arrows_out"]["cheat"]
 print (student.dict["arrows_out"]["cheat"][0])
 
 # Test with the js
-stdnt = read_from_json("student.json")
-read_from_json("add_first_coin_1.json")
-read_from_json("add_first_coin_2.json")
+stdnt = read_from_json("../student.json")
+read_from_json("../add_first_coin_1.json")
+read_from_json("../add_first_coin_2.json")
 print (stdnt.dict["arrows_out"]["not cheat"][1].dict["name"])
 filename = take_snapshot(stdnt.dict["id"])
 print (filename)
